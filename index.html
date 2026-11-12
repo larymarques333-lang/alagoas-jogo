@@ -1,4 +1,3 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Alagoas: Arte que Encanta</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1227,6 +1226,8 @@ window.ALAGOAS.CONFIG = {
       peer.on("open", () => { clearTimeout(t); res(); });
       peer.on("error", (e) => { clearTimeout(t); rej({ code: e && e.type === "unavailable-id" ? "codigo_ocupado" : "indisponivel" }); });
     });
+    peer.on("disconnected", () => { try { if (!peer.destroyed) peer.reconnect(); } catch (e) {} });
+    document.addEventListener("visibilitychange", () => { try { if (!document.hidden && peer.disconnected && !peer.destroyed) peer.reconnect(); } catch (e) {} });
     let mine = {}, seq = 0, closed = false;
     const conns = {}, pres = {};
     let hostConn = null, remote = [];
@@ -1254,7 +1255,7 @@ window.ALAGOAS.CONFIG = {
       hostConn.on("open", () => { try { hostConn.send({ p: mine }); } catch (e) {} });
       const lost = () => { if (!closed && onError) onError({ code: "caiu" }); };
       hostConn.on("close", lost); hostConn.on("error", lost);
-      peer.on("error", (e) => { if (e && e.type === "peer-unavailable") return; lost(); });
+      peer.on("error", (e) => { if (e && e.type === "peer-unavailable") { if (onError) onError({ code: "sem_sala" }); return; } lost(); });
     }
     const meta = async (patch) => {
       mine = Object.assign({}, mine, patch);
@@ -2004,7 +2005,15 @@ window.ALAGOAS.CONFIG = {
   }
 
   /* ============ ONLINE ============ */
+  let WL = null;
+  async function keepAwake() {
+    try { if (navigator.wakeLock && !document.hidden) WL = await navigator.wakeLock.request("screen"); } catch (e) {}
+  }
+  document.addEventListener("visibilitychange", () => { if (ONL && !document.hidden) keepAwake(); });
+
   function stopNet() {
+    try { if (WL) WL.release(); } catch (e) {}
+    WL = null;
     if (ONL && ONL.timer) clearTimeout(ONL.timer);
     if (ONL && ONL.goneTimer) clearTimeout(ONL.goneTimer);
     if (NETC) { NETC.close(); NETC = null; }
@@ -2032,6 +2041,7 @@ window.ALAGOAS.CONFIG = {
       return false;
     }
     MODE = papel;
+    keepAwake();
     await NETC.meta({ u: N.UID, n: nome, p: O.peao, role: papel === "host" ? "h" : "j", c: code, h: papel === "host" ? 1 : null });
     return true;
   }
@@ -2054,16 +2064,17 @@ window.ALAGOAS.CONFIG = {
     if (!(await connectRoom("client", code))) return;
     UI.screen = "lobby";
     renderLobby();
-    ONL.timer = setTimeout(() => {
-      if (ONL && !ONL.hostPeer) {
-        stopNet();
-        MODE = "local";
-        UI.on.busy = false;
-        UI.on.err = "Não encontrei essa sala. Confira o código e se o anfitrião está com o jogo aberto.";
-        UI.on.tab = "entrar";
-        renderOnlineMenu();
-      }
-    }, 9000);
+    ONL.timer = setTimeout(semSala, 25000);
+  }
+
+  function semSala() {
+    if (!ONL || ONL.papel !== "client" || ONL.hostPeer) return;
+    stopNet();
+    MODE = "local";
+    UI.on.busy = false;
+    UI.on.err = "Não encontrei essa sala. Confira o código e peça para o anfitrião manter o jogo aberto, com a tela ligada.";
+    UI.on.tab = "entrar";
+    renderOnlineMenu();
   }
 
   async function retomarSala() {
@@ -2082,8 +2093,9 @@ window.ALAGOAS.CONFIG = {
     publish();
   }
 
-  function onNetError() {
+  function onNetError(e) {
     if (!ONL) return;
+    if (e && e.code === "sem_sala") { semSala(); return; }
     if (UI.screen === "lobby") { ONL.err = "A conexão com a sala caiu. Saia e entre de novo."; renderLobby(); }
   }
 
@@ -2327,5 +2339,3 @@ window.ALAGOAS.CONFIG = {
 })();
 
 </script>
-
-</body></html>
