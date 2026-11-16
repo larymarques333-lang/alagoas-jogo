@@ -378,6 +378,18 @@ body {
 .legend li { box-shadow: 0 3px 0 rgba(20, 38, 79, .2); }
 .legend { margin-top: 40px; position: relative; z-index: 1; }
 
+/* ---------- alternativas ---------- */
+.opts { display: grid; grid-template-columns: 1fr; gap: 10px; }
+@media (min-width: 560px) { .opts { grid-template-columns: 1fr 1fr; } }
+.opt { display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 8px 14px 8px 8px; text-align: left; border-radius: 18px; border: 3px solid var(--fg); background: var(--surface); color: var(--fg); font-weight: 800; font-size: 17px; line-height: 1.2;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .6) inset, 0 5px 0 var(--fg), 0 10px 14px -4px rgba(20, 38, 79, .3); transition: transform .12s ease, box-shadow .12s ease; }
+.opt:not([disabled]):hover { transform: translateY(-2px); }
+.opt:not([disabled]):active { transform: translateY(4px); box-shadow: 0 1px 0 var(--fg); }
+.opt[disabled] { cursor: default; box-shadow: 0 3px 0 var(--fg); }
+.opt .lt { flex: 0 0 42px; height: 42px; display: grid; place-items: center; border-radius: 50%; background: radial-gradient(circle at 32% 26%, #fff 0, var(--cat, #F7C531) 45%, var(--cat-dark, #8A5A00) 140%); color: var(--cat-fg, #2A1B00); font-weight: 900; font-size: 20px; box-shadow: 0 3px 0 rgba(0, 0, 0, .3); }
+.opt .ot { min-width: 0; overflow-wrap: anywhere; }
+.note.small { font-size: 14px; }
+
 </style>
 <div id="root"></div>
 <div id="modal-root"></div>
@@ -475,6 +487,83 @@ window.ALAGOAS.CARTAS = {
     ["Qual é o principal objetivo dos folguedos populares de Alagoas?", "Eles mantêm vivas as tradições.", "Reúnem música, dança, teatro e manifestações culturais.", "Preservar e transmitir a cultura popular."],
     ["Qual folguedo tradicional apresenta personagens que representam reis, rainhas e outros integrantes de uma corte?", "Tem origem nas tradições populares e religiosas.", "Seu nome também está relacionado às festas do período natalino.", "Reisado."],
     ["Qual é a importância das danças tradicionais para a identidade cultural de Alagoas?", "Elas representam a história e os costumes do estado.", "Ajudam a manter as tradições vivas entre as gerações.", "Valorizar e preservar a identidade cultural alagoana."]
+  ]
+};
+
+/* ============================================================
+   ALTERNATIVAS (múltipla escolha) — 3 respostas erradas por carta,
+   na mesma ordem das cartas de cartas.js. A resposta certa é a 4ª
+   posição da carta; aqui ficam só as erradas.
+   ============================================================ */
+window.ALAGOAS = window.ALAGOAS || {};
+window.ALAGOAS.ALTS = {
+  gastronomia: [
+    ["Camarão-rosa.", "Caranguejo-uçá.", "Siri-mole."],
+    ["Sururu à milanesa.", "Sururu de chapéu.", "Sururu na chapa."],
+    ["Creme de leite.", "Leite condensado.", "Óleo de dendê."],
+    ["Bobó de camarão.", "Casquinha de siri.", "Camarão à milanesa."],
+    ["Farinha de trigo.", "Fubá de milho.", "Farinha de arroz."],
+    ["Paçoca.", "Pé de moleque.", "Brigadeiro."],
+    ["Lagostada.", "Siricada.", "Camaronada."],
+    ["Pamonha.", "Canjica.", "Mungunzá."],
+    ["Pirão de peixe.", "Panelada.", "Paçoca de peixe."],
+    ["Pastel de feira.", "Cuscuz recheado.", "Panqueca de trigo."],
+    ["Caju.", "Graviola.", "Jabuticaba."],
+    ["Moqueca capixaba.", "Bobó de camarão.", "Vatapá."],
+    ["Bolo de rolo.", "Broa de milho.", "Beijinho de coco."],
+    ["Requeijão cremoso.", "Manteiga de garrafa.", "Queijo parmesão."],
+    ["Feijoada com farofa.", "Galinha de cabidela com arroz.", "Buchada de bode com pirão."]
+  ],
+  musica: [
+    ["Zabumba.", "Berimbau.", "Cavaquinho."],
+    ["Samba de roda.", "Frevo.", "Maracatu."],
+    ["Piano.", "Harpa.", "Zabumba."],
+    ["Maracatu rural.", "Cavalo-marinho.", "Congada."],
+    ["Ritmo do samba.", "Ritmo do frevo.", "Ritmo da valsa."],
+    ["Alceu Valença.", "Zé Ramalho.", "Luiz Gonzaga."],
+    ["Sina.", "Esquinas.", "Açaí."],
+    ["Frevo.", "Maracatu.", "Carimbó."],
+    ["Reco-reco.", "Atabaque.", "Agogô."],
+    ["Bandas de fanfarra.", "Orquestras sinfônicas.", "Bandas de rock."],
+    ["Viola caipira.", "Bandolim.", "Cavaquinho."],
+    ["Frevo.", "Samba de gafieira.", "Carimbó."],
+    ["Maracatu.", "Frevo.", "Congada."],
+    ["Zabumba.", "Triângulo.", "Surdo."],
+    ["Servir apenas para entreter os turistas.", "Substituir as danças e os folguedos populares.", "Garantir a venda de instrumentos musicais."]
+  ],
+  artesanato: [
+    ["Renda de bilro.", "Renda irlandesa.", "Tricô."],
+    ["Palha seca.", "Cera de abelha.", "Couro cru."],
+    ["Jatiúca.", "Farol.", "Cruz das Almas."],
+    ["Cerâmica.", "Fundição de metal.", "Escultura em pedra."],
+    ["Pintura em tela.", "Tingimento de tecido.", "Estamparia."],
+    ["Renda de bilro.", "Renda irlandesa.", "Renda filé."],
+    ["Vidro.", "Metal.", "Plástico."],
+    ["Marechal Deodoro.", "Maragogi.", "Palmeira dos Índios."],
+    ["Peças feitas em máquinas industriais.", "Tecido liso sem nenhum desenho.", "Pinturas feitas com tinta sobre madeira."],
+    ["Cuia.", "Alguidar.", "Peneira."],
+    ["Aumentar o preço dos produtos.", "Substituir as máquinas das fábricas.", "Afastar os jovens das tradições."],
+    ["Cestaria.", "Cerâmica.", "Marchetaria."],
+    ["Artesanato com couro.", "Artesanato com vidro.", "Artesanato com palha."],
+    ["Produzir máquinas têxteis.", "Vender somente produtos importados.", "Substituir o trabalho manual por indústria."],
+    ["Porque só é produzido para exportação.", "Porque segue modelos copiados de outros países.", "Porque substitui a história oficial do estado."]
+  ],
+  danca: [
+    ["Maracatu.", "Frevo.", "Carimbó."],
+    ["Maracatu.", "Frevo.", "Congada."],
+    ["Cavalhada.", "Bumba-meu-boi.", "Maracatu."],
+    ["Capoeira.", "Frevo.", "Carimbó."],
+    ["Frevo.", "Maracatu.", "Lundu."],
+    ["Bumba-meu-boi.", "Pastoril.", "Caboclinhos."],
+    ["Cavalhada.", "Caboclinhos.", "Chegança."],
+    ["Cavalhada.", "Maracatu.", "Chegança."],
+    ["Bumba-meu-boi.", "Chegança.", "Pastoril."],
+    ["Frevo.", "Maracatu.", "Capoeira."],
+    ["Baianas.", "Chegança.", "Pastoril."],
+    ["Frevo.", "Maracatu.", "Valsa."],
+    ["Competir em campeonatos esportivos.", "Substituir as festas religiosas.", "Divulgar apenas músicas estrangeiras."],
+    ["Caboclinhos.", "Chegança.", "Bumba-meu-boi."],
+    ["Servir apenas como exercício físico.", "Atrair somente turistas estrangeiros.", "Substituir a cultura de outros estados."]
   ]
 };
 
@@ -614,8 +703,10 @@ window.ALAGOAS.CONFIG = {
     return { cat, idx };
   }
 
-  function avanco(dicasUsadas) {
-    return C.AVANCO_POR_DICAS[Math.min(dicasUsadas, C.AVANCO_POR_DICAS.length - 1)];
+  /* Cada dica e o uso das alternativas contam como uma "ajuda". */
+  function avanco(dicasUsadas, alternativas) {
+    const ajuda = dicasUsadas + (alternativas ? 1 : 0);
+    return C.AVANCO_POR_DICAS[Math.min(ajuda, C.AVANCO_POR_DICAS.length - 1)];
   }
 
   /* Resolve um movimento. Pelo manual, quem alcança ou ultrapassa a
@@ -739,12 +830,12 @@ window.ALAGOAS.CONFIG = {
       return true;
     }
     if (ok) {
-      const casas = ph.md === "x" ? C.EXTRA_AVANCO : E.avanco(ph.d);
-      p.k = ph.d === 0 ? p.k + 1 : 0;
+      const casas = ph.md === "x" ? C.EXTRA_AVANCO : E.avanco(ph.d, ph.alt);
+      p.k = ph.d === 0 && !ph.alt ? p.k + 1 : 0;
       let bonus = false;
       if (p.k >= C.ACERTOS_PARA_ESPECIAL) { bonus = true; p.k = 0; }
-      const li = [`${p.n} avança ${casas} casas${ph.md === "x" ? " (pergunta extra)" : ph.d ? ` (usou ${ph.d} ${ph.d === 1 ? "dica" : "dicas"})` : " sem usar dicas"}.`];
-      if (bonus) li.push(`Avanço especial! ${C.ACERTOS_PARA_ESPECIAL} acertos seguidos sem dicas: mais ${C.AVANCO_ESPECIAL} casas.`);
+      const li = [`${p.n} avança ${casas} casas${ph.md === "x" ? " (pergunta extra)" : ph.alt ? ` (com alternativas${ph.d ? ` e ${ph.d} ${ph.d === 1 ? "dica" : "dicas"}` : ""})` : ph.d ? ` (usou ${ph.d} ${ph.d === 1 ? "dica" : "dicas"})` : " sem ajuda"}.`];
+      if (bonus) li.push(`Avanço especial! ${C.ACERTOS_PARA_ESPECIAL} acertos seguidos sem ajuda: mais ${C.AVANCO_ESPECIAL} casas.`);
       const pe = [{ o: "m", i: S.t, d: casas }];
       if (bonus) pe.push({ o: "m", i: S.t, d: C.AVANCO_ESPECIAL });
       pe.push({ o: "l", i: S.t });
@@ -773,15 +864,29 @@ window.ALAGOAS.CONFIG = {
         const { cat, idx } = E.draw(D, a.c);
         const md = S.exp ? "x" : "n";
         S.exp = false;
-        setPh(S, { k: "car", cat, idx, md, q: S.t, f: "p", d: 0, tx: "", tn: [] });
+        setPh(S, { k: "car", cat, idx, md, q: S.t, f: "p", d: 0, alt: 0, op: null, tx: "", tn: [] });
         return true;
+      }
+      case "alt":
+        if (ph.k !== "car" || ph.f !== "p" || ph.alt || !isQ()) return false;
+        ph.alt = 1;
+        ph.op = E.shuffle([0, 1, 2, 3]);
+        return true;
+      case "pick": {
+        if (ph.k !== "car" || ph.f !== "p" || !ph.alt || !isQ()) return false;
+        const o = a.o;
+        if (!(o >= 0 && o < 4)) return false;
+        const alts = A.ALTS[ph.cat][ph.idx];
+        const lista = [CARTAS[ph.cat][ph.idx][3]].concat(alts);
+        ph.tx = String(lista[ph.op[o]]).replace(/\.$/, "").slice(0, 60);
+        return judge(S, ph, ph.op[o] === 0);
       }
       case "dica":
         if (ph.k !== "car" || ph.f !== "p" || ph.d >= 2 || !isQ()) return false;
         ph.d++;
         return true;
       case "conf":
-        if (ph.k !== "car" || ph.f !== "p" || !isQ()) return false;
+        if (ph.k !== "car" || ph.f !== "p" || ph.alt || !isQ()) return false;
         ph.tx = String(a.tx || "").slice(0, 60);
         ph.f = "j";
         return true;
@@ -828,7 +933,7 @@ window.ALAGOAS.CONFIG = {
         if (!(o >= 0 && o < n) || o === ph.i) return false;
         const { cat, idx } = E.draw(D, E.pick(C.ORDEM_CATEGORIAS));
         log(S, `${S.pl[S.t].n} escolheu ${S.pl[o].n} para responder.`);
-        setPh(S, { k: "car", cat, idx, md: "a", q: o, f: "p", d: 0, tx: "", tn: [] });
+        setPh(S, { k: "car", cat, idx, md: "a", q: o, f: "p", d: 0, alt: 0, op: null, tx: "", tn: [] });
         return true;
       }
       case "cont": {
@@ -1034,30 +1139,6 @@ window.ALAGOAS.CONFIG = {
   }
 
   /* ---------- geometria ---------- */
-  const SX0 = 190, SX1 = 810, SR = 85, SY = [250, 420, 590, 760];
-  const SNAKE_D = `M${SX0},${SY[0]} H${SX1} A${SR},${SR} 0 0 1 ${SX1},${SY[1]} H${SX0} A${SR},${SR} 0 0 0 ${SX0},${SY[2]} H${SX1} A${SR},${SR} 0 0 1 ${SX1},${SY[3]} H${SX0}`;
-  function snake(N) {
-    const segs = [];
-    for (let k = 0; k < 4; k++) {
-      const y = SY[k], dir = k % 2 === 0 ? 1 : -1, xs = dir === 1 ? SX0 : SX1, xe = dir === 1 ? SX1 : SX0;
-      segs.push({ len: SX1 - SX0, at: (u) => ({ x: xs + (xe - xs) * u, y }) });
-      if (k < 3) {
-        const cx = dir === 1 ? SX1 : SX0, cy = y + SR;
-        segs.push({ len: Math.PI * SR, at: (u) => { const a = -Math.PI / 2 + dir * Math.PI * u; return { x: cx + SR * Math.cos(a), y: cy + SR * Math.sin(a) }; } });
-      }
-    }
-    const total = segs.reduce((s, g) => s + g.len, 0);
-    const spacing = total / (N - 1);
-    const pts = [];
-    for (let i = 0; i < N; i++) {
-      let s = Math.min(i * spacing, total - 1e-6), k = 0;
-      while (s > segs[k].len) { s -= segs[k].len; k++; }
-      const p = segs[k].at(s / segs[k].len);
-      pts.push({ x: p.x, y: p.y, ang: 0 });
-    }
-    return { pts, spacing };
-  }
-
   function ring(N, a, b, off) {
     const M = 4000;
     const phis = [], cum = [0];
@@ -1118,8 +1199,8 @@ window.ALAGOAS.CONFIG = {
   /* ---------- montagem ---------- */
   function build(path) {
     const N = path.length;
-    const { pts, spacing } = snake(N);
-    const size = Math.min(52, spacing * 0.8);
+    const { pts, spacing } = ring(N, RA, RB, 0.5);
+    const size = Math.min(46, spacing * 0.88);
     const rnd = rng(2025);
 
     const cats = C.ORDEM_CATEGORIAS;
@@ -1188,54 +1269,87 @@ window.ALAGOAS.CONFIG = {
       <text x="${c[0]}" y="${c[1] + 2}" text-anchor="middle" dominant-baseline="central" font-size="50">${g.icone}</text>`;
     });
 
-    /* cenário entre as fileiras (vai por baixo do caminho) */
-    svg += `<g filter="url(#clay)">`;
-    svg += island(500, 505, 190, 34) + church(500, 486, 0.62);
-    svg += casarao(340, 506, 30, 26, "#F08BA7") + casarao(662, 508, 32, 28, "#F4C94A") + casarao(392, 498, 24, 22, "#7FC4EF");
-    svg += coqueiro(300, 512, 0.34, -12, 31) + coqueiro(712, 514, 0.34, 12, 32) + coqueiro(250, 500, 0.3, 8, 33);
-    svg += island(500, 335, 230, 26) + coqueiro(330, 338, 0.34, -10, 34) + coqueiro(670, 338, 0.34, 10, 35) + casarao(430, 330, 28, 24, "#F4C94A") + casarao(560, 331, 28, 24, "#F08BA7") + coqueiro(500, 338, 0.3, 4, 36);
-    svg += island(520, 675, 220, 26) + lighthouse(660, 660, 0.5) + coqueiro(300, 678, 0.34, -10, 37) + casarao(400, 668, 28, 24, "#7FC4EF") + casarao(470, 670, 26, 22, "#F4C94A") + coqueiro(740, 680, 0.3, 10, 38);
-    svg += `</g>`;
-    /* lagoa de baixo com jangadas */
-    svg += `<g filter="url(#clay)"><ellipse cx="560" cy="890" rx="250" ry="42" fill="url(#sea)" stroke="#FFFFFF" stroke-width="5"/></g>`;
-    const rw = rng(9);
-    for (let i = 0; i < 9; i++) svg += `<path class="wv" style="animation-delay:${(rw() * 3).toFixed(2)}s" d="M${380 + rw() * 360},${875 + rw() * 30} q10,-8 20,0 t20,0" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".7"/>`;
-    svg += `<g filter="url(#clay)">` + jangada(470, 892, 0.55, -4, 0) + jangada(650, 894, 0.5, 5, 1.2) + `</g>`;
-
     /* caminho de terra e pedrinhas */
-    svg += `<g filter="url(#soft)"><path d="${SNAKE_D}" fill="none" stroke="#5E3A1B" stroke-width="82" stroke-linecap="round" stroke-linejoin="round"/></g>
+    svg += `<g filter="url(#soft)"><ellipse cx="${CX}" cy="${CY}" rx="${RA}" ry="${RB}" fill="none" stroke="#5E3A1B" stroke-width="94"/></g>
       <g filter="url(#clay)">
-      <path d="${SNAKE_D}" fill="none" stroke="#B9783F" stroke-width="78" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="${SNAKE_D}" fill="none" stroke="#E9C27E" stroke-width="68" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="${SNAKE_D}" fill="none" stroke="#F6DDA4" stroke-width="48" stroke-linecap="round" stroke-linejoin="round"/></g>
-      <path d="${SNAKE_D}" fill="none" stroke="#B9783F" stroke-width="3" stroke-dasharray="3 13" stroke-linecap="round" opacity=".55"/>`;
+      <ellipse cx="${CX}" cy="${CY}" rx="${RA}" ry="${RB}" fill="none" stroke="#B9783F" stroke-width="90"/>
+      <ellipse cx="${CX}" cy="${CY}" rx="${RA}" ry="${RB}" fill="none" stroke="#E9C27E" stroke-width="80"/>
+      <ellipse cx="${CX}" cy="${CY}" rx="${RA}" ry="${RB}" fill="none" stroke="#F6DDA4" stroke-width="58"/></g>
+      <ellipse cx="${CX}" cy="${CY}" rx="${RA}" ry="${RB}" fill="none" stroke="#B9783F" stroke-width="3" stroke-dasharray="3 13" stroke-linecap="round" opacity=".55"/>`;
     const rp = rng(77);
     svg += `<g filter="url(#clay)">`;
-    for (let i = 0; i < 170; i++) {
-      const q = pts[Math.floor(rp() * N)], th = rp() * Math.PI * 2, o = 30 + rp() * 7;
-      const x = q.x + Math.cos(th) * (rp() * 8) + (rp() < 0.5 ? 0 : 0), y = q.y + (rp() < 0.5 ? -1 : 1) * o * (0.9 + rp() * 0.1), r = 2.4 + rp() * 3.2;
-      svg += `<ellipse cx="${(x + (rp() - 0.5) * 40).toFixed(1)}" cy="${y.toFixed(1)}" rx="${r.toFixed(1)}" ry="${(r * 0.8).toFixed(1)}" fill="${["#C9A06A", "#B98B57", "#D8B882", "#A87A48"][i % 4]}"/>`;
+    for (let i = 0; i < 190; i++) {
+      const th = rp() * Math.PI * 2, o = (rp() < 0.5 ? -1 : 1) * (31 + rp() * 10);
+      const x = CX + (RA + o) * Math.cos(th), y = CY + (RB + o) * Math.sin(th), r = 2.6 + rp() * 3.6;
+      svg += `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="${r.toFixed(1)}" ry="${(r * 0.8).toFixed(1)}" fill="${["#C9A06A", "#B98B57", "#D8B882", "#A87A48"][i % 4]}"/>`;
     }
     svg += `</g>`;
 
+    /* lagoa */
+    svg += `<ellipse cx="${CX}" cy="${CY}" rx="${RA - 41}" ry="${RB - 41}" fill="url(#sea)" stroke="#FFFFFF" stroke-width="5"/>`;
+    svg += `<g clip-path="url(#lagoonClip)">`;
+    for (let k = 1; k <= 5; k++) svg += `<ellipse cx="${CX}" cy="${CY}" rx="${(RA - 44) * (k / 5.2)}" ry="${(RB - 44) * (k / 5.2)}" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="${0.1 + k * 0.01}"/>`;
+    const rw = rng(9);
+    for (let i = 0; i < 34; i++) {
+      const x = CX + (rw() - 0.5) * 700, y = CY + (rw() - 0.5) * 640;
+      svg += `<path class="wv" style="animation-delay:${(rw() * 3).toFixed(2)}s" d="M${x},${y} q10,-9 20,0 t20,0" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".7"/>`;
+    }
+    svg += cloud(300, 235, 1) + cloud(700, 215, 0.8) + cloud(585, 262, 0.6);
+    svg += sun(445, 252, 30);
+
+    svg += `<g filter="url(#clay)">`;
+    /* ilha da igreja (direita) */
+    svg += island(660, 392, 160, 48);
+    svg += casarao(560, 392, 40, 34, "#F4C94A") + casarao(752, 394, 44, 38, "#F08BA7") + casarao(610, 376, 34, 30, "#7FC4EF");
+    svg += church(668, 352, 1.08);
+    svg += coqueiro(545, 400, 0.5, -20, 21) + coqueiro(780, 404, 0.46, 18, 22);
+
+    /* ilha esquerda */
+    svg += island(300, 424, 118, 36);
+    svg += casarao(236, 424, 32, 28, "#F08BA7") + casarao(372, 426, 34, 30, "#F4C94A");
+    svg += church(302, 398, 0.62);
+    svg += coqueiro(214, 430, 0.42, -16, 23) + coqueiro(392, 432, 0.4, 14, 24);
+
+    /* farol */
+    svg += island(814, 604, 50, 22);
+    svg += lighthouse(818, 576, 0.74) + coqueiro(786, 608, 0.3, -10, 25);
+
+    /* jangadas */
+    svg += jangada(332, 766, 0.8, -4, 0) + jangada(668, 770, 0.74, 5, 1.2);
+    svg += `</g></g>`;
+
+    /* borda de renda filé na margem da lagoa */
+    const lace = ring(120, RA - 38, RB - 38, 0).pts;
+    lace.forEach((p) => (svg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="9.5" fill="none" stroke="#FFFFFF" stroke-width="3" opacity=".95"/>`));
+
     /* placa do título */
     svg += `<g filter="url(#ds)"><g filter="url(#clay)">
-      <rect x="250" y="44" width="500" height="112" rx="38" fill="#FFF4D9" stroke="#8A5A2B" stroke-width="6"/>
-      <rect x="260" y="54" width="480" height="92" rx="30" fill="none" stroke="#F0AE1F" stroke-width="3" stroke-dasharray="11 7"/>
+      <rect x="240" y="446" width="520" height="168" rx="44" fill="#FFF4D9" stroke="#8A5A2B" stroke-width="6"/>
+      <rect x="252" y="458" width="496" height="144" rx="34" fill="none" stroke="#F0AE1F" stroke-width="3" stroke-dasharray="11 7"/>
     </g></g>
-    <text x="500" y="112" text-anchor="middle" font-family="Lobster, cursive" font-size="70" fill="#14264F" stroke="#FFFFFF" stroke-width="6" paint-order="stroke">Alagoas</text>
-    <text x="500" y="143" text-anchor="middle" font-family="Lobster, cursive" font-size="30" fill="#C8283A" stroke="#FFFFFF" stroke-width="4" paint-order="stroke">Arte que Encanta</text>
-    <g filter="url(#ds)"><path d="M310,160 L690,160 L678,176 L690,192 L310,192 L322,176Z" fill="#C8283A" stroke="#7E111D" stroke-width="3" stroke-linejoin="round"/></g>
-    <text x="500" y="182" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="14" fill="#FFF3D6">Nossa cultura é a nossa maior riqueza!</text>`;
+    <text x="500" y="540" text-anchor="middle" font-family="Lobster, cursive" font-size="98" fill="#14264F" stroke="#FFFFFF" stroke-width="7" paint-order="stroke">Alagoas</text>
+    <text x="500" y="594" text-anchor="middle" font-family="Lobster, cursive" font-size="48" fill="#C8283A" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">Arte que Encanta</text>
+    <g filter="url(#ds)"><path d="M296,622 L704,622 L690,646 L704,670 L296,670 L310,646Z" fill="#C8283A" stroke="#7E111D" stroke-width="3" stroke-linejoin="round"/></g>
+    <text x="500" y="653" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="18" fill="#FFF3D6">Nossa cultura é a nossa maior riqueza!</text>`;
 
     /* casas */
     path.forEach((t, i) => (svg += tileSVG(t, pts[i], size)));
 
+    /* setas de sentido */
+    for (let i = 3; i < N - 1; i += 5) {
+      const p = pts[i];
+      const dx = CX - p.x, dy = CY - p.y, d = Math.hypot(dx, dy);
+      const ax = p.x + (dx / d) * 62, ay = p.y + (dy / d) * 62;
+      svg += `<path d="M-11,-10 L9,0 L-11,10 L-5,0Z" transform="translate(${ax} ${ay}) rotate(${p.ang})" fill="#FFD84D" stroke="#14264F" stroke-width="2.5" stroke-linejoin="round"/>`;
+    }
+
     /* bandeiras de início e chegada */
     const s0 = pts[0], sN = pts[N - 1];
-    svg += flag(s0.x - 62, s0.y + 4, "", "#1F9A55", false) + flag(sN.x - 62, sN.y + 4, "", "", true);
-    const lab = (x, y, txt) => `<text x="${x}" y="${y}" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="18" fill="#14264F" stroke="#FFFFFF" stroke-width="6" paint-order="stroke" letter-spacing="1">${txt}</text>`;
-    svg += lab(s0.x - 20, s0.y - 42, "INÍCIO") + lab(sN.x - 20, sN.y + 56, "CHEGADA");
+    const inward = (p, k) => { const dx = CX - p.x, dy = CY - p.y, d = Math.hypot(dx, dy); return [p.x + (dx / d) * k, p.y + (dy / d) * k]; };
+    const [fx0, fy0] = inward(s0, 66), [fx1, fy1] = inward(sN, 66);
+    svg += flag(fx0 - 4, fy0, "", "#1F9A55", false) + flag(fx1 + 4, fy1, "", "", true);
+    const lab = (x, y, txt, anchor) => `<text x="${x}" y="${y}" text-anchor="${anchor}" font-family="Nunito, sans-serif" font-weight="900" font-size="20" fill="#14264F" stroke="#FFFFFF" stroke-width="6" paint-order="stroke" letter-spacing="1">${txt}</text>`;
+    svg += lab(fx0 - 14, fy0 + 2, "INÍCIO", "end") + lab(fx1 + 14, fy1 + 2, "CHEGADA", "start");
 
     svg += `<circle id="hl" r="${size * 0.82}" cx="-100" cy="-100" fill="none" stroke="#FFFFFF" stroke-width="5"/><circle id="hl2" r="${size * 0.82}" cx="-100" cy="-100" fill="none" stroke="#F7C531" stroke-width="3"/>`;
     svg += `<g id="pawns"></g></svg>`;
@@ -1861,25 +1975,33 @@ window.ALAGOAS.CONFIG = {
     if (isAdv) prize = `<div class="prize"><small>Pergunta para</small><b>${esc(q.n)}</b></div>`;
     else if (ph.f === "r") prize = `<div class="prize"><small>Roubo de vez</small><b>+${C.ROUBO_AVANCO} casas</b></div>`;
     else if (isX) prize = `<div class="prize"><small>Pergunta extra</small><b>${C.EXTRA_AVANCO} casas</b></div>`;
-    else prize = `<div class="prize"><small>Vale</small><b>${E.avanco(ph.d)} casas</b></div>`;
+    else prize = `<div class="prize"><small>Vale</small><b>${E.avanco(ph.d, ph.alt)} casas</b></div>`;
 
     let steps = "";
     if (!isAdv && !isX && ph.f !== "r") {
-      const lab = ["Sem dica", "1ª dica", "2ª dica"];
-      steps = `<ol class="steps" aria-label="Casas por dica">${C.AVANCO_POR_DICAS.map((v, k) => `<li class="${k === ph.d ? "on" : k < ph.d ? "past" : ""}"><span>${lab[k]}</span><b>${v}</b></li>`).join("")}</ol>`;
+      const lab = ["Sem ajuda", "1 ajuda", "2 ajudas"];
+      const nivel = Math.min(2, ph.d + (ph.alt ? 1 : 0));
+      steps = `<ol class="steps" aria-label="Casas por ajuda usada">${C.AVANCO_POR_DICAS.map((v, k) => `<li class="${k === nivel ? "on" : k < nivel ? "past" : ""}"><span>${lab[k]}</span><b>${v}</b></li>`).join("")}</ol>
+        <p class="note small">Cada dica, ou o uso das alternativas, conta como uma ajuda.</p>`;
     }
 
     let corpo;
     if (ph.f === "p") {
+      const lista = ph.alt ? [c[3]].concat(A.ALTS[ph.cat][ph.idx]) : null;
+      const optsHtml = ph.alt ? `<div class="opts" role="group" aria-label="Alternativas">${ph.op.map((ix, o) => `<button class="opt" ${meQ ? `data-a="pick" data-o="${o}"` : "disabled"}><span class="lt" aria-hidden="true">${"ABCD"[o]}</span><span class="ot">${esc(String(lista[ix]).replace(/\.$/, ""))}</span></button>`).join("")}</div>` : "";
+      const valor = (isAdv || isX) ? "" : (n) => ` <small>(passa a valer ${n})</small>`;
       corpo = dicasHtml + (meQ ? `
         <div class="row-actions">
-          ${ph.d < 2 ? `<button class="btn btn-ghost" data-a="dica">💡 Pedir ${ph.d === 0 ? "a 1ª" : "a 2ª"} dica${isAdv || isX ? "" : ` <small>(passa a valer ${E.avanco(ph.d + 1)})</small>`}</button>` : ""}
+          ${ph.d < 2 ? `<button class="btn btn-ghost" data-a="dica">💡 Pedir ${ph.d === 0 ? "a 1ª" : "a 2ª"} dica${valor ? valor(E.avanco(ph.d + 1, ph.alt)) : ""}</button>` : ""}
+          ${!ph.alt ? `<button class="btn btn-ghost" data-a="alt">🔤 Ver alternativas${valor ? valor(E.avanco(ph.d, 1)) : ""}</button>` : ""}
           ${speakBtn}
         </div>
+        ${ph.alt ? `<p class="flabel">Escolha a resposta de ${esc(q.n)}:</p>${optsHtml}` : `
         <label class="flabel" for="resp">Resposta de ${esc(q.n)} <span class="muted">(opcional, pode responder em voz alta)</span></label>
         <input id="resp" class="input" type="text" maxlength="60" autocomplete="off">
-        <button class="btn btn-primary btn-xl" data-a="conf">Confirmar resposta</button>` : `
+        <button class="btn btn-primary btn-xl" data-a="conf">Confirmar resposta</button>`}` : `
         <div class="row-actions">${speakBtn}</div>
+        ${ph.alt ? optsHtml : ""}
         <p class="wait">⏳ ${esc(q.n)} está respondendo…</p>`);
     } else if (ph.f === "j") {
       corpo = dicasHtml + `<div class="said"><span class="avatar sm" style="--c:${peaoDe(q).cor}" aria-hidden="true">${peaoDe(q).icone}</span>
@@ -2287,17 +2409,17 @@ window.ALAGOAS.CONFIG = {
     </ol>
     <h3>Quanto você avança</h3>
     <div class="table">
-      <div><span>Acertou sem dicas</span><b>6 casas</b></div>
-      <div><span>Acertou com a 1ª dica</span><b>4 casas</b></div>
-      <div><span>Acertou com a 2ª dica</span><b>2 casas</b></div>
+      <div><span>Acertou sem ajuda</span><b>6 casas</b></div>
+      <div><span>Com 1 ajuda (1ª dica ou alternativas)</span><b>4 casas</b></div>
+      <div><span>Com 2 ajudas (dica e alternativas)</span><b>2 casas</b></div>
       <div><span>Errou</span><b>não avança</b></div>
     </div>
-    <p class="muted">Os números são casas avançadas, não pontos acumulados.</p>
+    <p class="muted">Os números são casas avançadas, não pontos acumulados. Ao pedir as alternativas, o jogo mostra 4 opções e confere a resposta sozinho.</p>
     <h3>Casas e regras especiais</h3>
     <ul class="rules">
       <li><b>🎁 Casa Surpresa:</b> avance 3 casas, volte 2, escolha um adversário para responder uma pergunta, perca uma rodada ou ganhe uma pergunta extra (acertando, avança 3 casas).</li>
       <li><b>🏴‍☠️ Roubo de vez:</b> se você errar, os outros jogadores podem responder. Quem acertar primeiro avança 2 casas. Você fica onde estava.</li>
-      <li><b>🚀 Avanço especial:</b> 3 acertos seguidos sem usar dicas rendem mais 2 casas.</li>
+      <li><b>🚀 Avanço especial:</b> 3 acertos seguidos sem nenhuma ajuda rendem mais 2 casas.</li>
       <li><b>❤️ Orgulho de ser alagoano:</b> cumpra um desafio sobre Alagoas e avance 15 casas. Se não conseguir, fica na mesma casa.</li>
     </ul>
     <h3>Chegada</h3>
@@ -2369,12 +2491,14 @@ window.ALAGOAS.CONFIG = {
     const S = VIEW;
     if (!S) return;
     if (a === "dica") dispatch("dica");
+    else if (a === "alt") dispatch("alt");
+    else if (a === "pick") dispatch("pick", { o: +d.dataset.o });
     else if (a === "conf") dispatch("conf", { tx: UI.tx });
     else if (a === "tenta") dispatch("tenta", { tx: UI.tx });
     else if (a === "ver") { UI.ver = !UI.ver; UI.keepFocus = true; renderPhase(); UI.keepFocus = false; }
     else if (a === "falar") {
       const ph = S.ph, c = CARTAS[ph.cat][ph.idx];
-      speak([c[0]].concat([c[1], c[2]].slice(0, ph.d)).join(" "));
+      speak([c[0]].concat([c[1], c[2]].slice(0, ph.d)).concat(ph.alt ? ["Alternativas."].concat(ph.op.map((ix, o) => "ABCD"[o] + ". " + String(([c[3]].concat(A.ALTS[ph.cat][ph.idx]))[ix]).replace(/\.$/, ""))) : []).join(" "));
     }
     else if (a === "acertou") dispatch("julga", { ok: true });
     else if (a === "errou") dispatch("julga", { ok: false });
