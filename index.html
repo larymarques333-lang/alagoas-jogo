@@ -303,6 +303,81 @@ button { cursor: pointer; }
 .tents q { font-style: italic; }
 .home-actions .btn-xl { font-size: 18px; }
 
+/* ---------- 3D ---------- */
+.board-col { perspective: 1500px; perspective-origin: 50% 20%; }
+.board-box {
+  transform: rotateX(12deg); transform-origin: 50% 90%; transform-style: preserve-3d;
+  border-radius: 40px;
+  box-shadow: 0 2px 0 #8A5A24, 0 4px 0 #7B4A20, 0 6px 0 #6B3F17, 0 8px 0 #5A340F, 0 10px 0 #4A2A0D, 0 12px 0 #3B2008,
+    0 34px 30px -6px rgba(10, 26, 51, .55), 0 60px 60px -20px rgba(10, 26, 51, .35);
+  transition: transform .4s ease;
+}
+.board-box:hover { transform: rotateX(6deg); }
+.board-col { padding-bottom: 14px; }
+@media (max-width: 700px) { .board-box { transform: rotateX(7deg); } }
+@media (prefers-reduced-motion: reduce) { .board-box, .board-box:hover { transform: none; transition: none; } }
+.pawn { filter: drop-shadow(0 4px 3px rgba(10, 26, 51, .35)); }
+
+.panel {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .6) inset, 0 -3px 0 rgba(20, 38, 79, .08) inset, 0 6px 0 rgba(20, 38, 79, .14), 0 16px 26px -8px rgba(20, 38, 79, .35);
+}
+.btn { box-shadow: 0 1px 0 rgba(255, 255, 255, .45) inset, 0 5px 0 var(--fg), 0 10px 14px -4px rgba(20, 38, 79, .35); }
+.btn-sun { box-shadow: 0 1px 0 rgba(255, 255, 255, .5) inset, 0 5px 0 #8A5A00, 0 10px 14px -4px rgba(20, 38, 79, .35); }
+.btn-ok { box-shadow: 0 1px 0 rgba(255, 255, 255, .4) inset, 0 5px 0 #0F4A24, 0 10px 14px -4px rgba(20, 38, 79, .35); }
+.btn-no { box-shadow: 0 1px 0 rgba(255, 255, 255, .4) inset, 0 5px 0 #6E140F, 0 10px 14px -4px rgba(20, 38, 79, .35); }
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(4px); box-shadow: 0 1px 0 rgba(255, 255, 255, .3) inset, 0 1px 0 var(--fg); }
+.cat-btn { box-shadow: 0 2px 0 rgba(255, 255, 255, .35) inset, 0 -3px 0 rgba(0, 0, 0, .18) inset, 0 6px 0 var(--cat-dark), 0 12px 16px -6px rgba(20, 38, 79, .4); transition: transform .12s ease, box-shadow .12s ease; }
+.cat-btn:not([disabled]):hover { transform: translateY(-3px); }
+.cat-btn:not([disabled]):active { transform: translateY(5px); box-shadow: 0 2px 0 rgba(255, 255, 255, .3) inset, 0 1px 0 var(--cat-dark); }
+.avatar { background: radial-gradient(circle at 32% 26%, #fff 0, var(--c) 38%, rgba(0, 0, 0, .5) 130%) !important; box-shadow: 0 3px 0 rgba(0, 0, 0, .3), 0 6px 8px rgba(20, 38, 79, .3); }
+.sheet { transform-origin: 50% 100%; animation: sheet3d .45s cubic-bezier(.2, .9, .3, 1.15); box-shadow: 0 2px 0 rgba(255, 255, 255, .5) inset, 0 10px 0 rgba(20, 38, 79, .25), 0 40px 60px -10px rgba(10, 26, 51, .6); }
+@keyframes sheet3d { from { opacity: 0; transform: perspective(900px) rotateX(-18deg) translateY(30px) scale(.94); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .sheet { animation: none; } }
+.card-head .ic { filter: drop-shadow(0 3px 2px rgba(0, 0, 0, .35)); }
+.prize { box-shadow: 0 3px 0 rgba(0, 0, 0, .25), 0 8px 10px rgba(0, 0, 0, .2); }
+.h1-a { text-shadow: 0 2px 0 #fff, 0 5px 0 rgba(200, 40, 58, .35), 0 12px 14px rgba(20, 38, 79, .3); }
+.home-art img { box-shadow: 0 3px 0 #8A5A24, 0 7px 0 #6B3F17, 0 11px 0 #4A2A0D, 0 30px 40px -8px rgba(10, 26, 51, .5); border-radius: 22px; transform: perspective(1200px) rotateY(-6deg) rotateX(3deg); }
+[hidden] { display: none !important; }
+
+/* ---------- ilha de argila (inspiração isométrica) ---------- */
+:root {
+  --bg: #8EE6EE;
+  --sky-1: #6FD9EA; --sky-2: #B8F1F4; --cloud: rgba(255, 255, 255, .85);
+  --panel-a: #FFE3AC; --panel-b: #FFC878; --panel-lip: #E39A3F;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #0B2A44; --sky-1: #0B3350; --sky-2: #0F4A63; --cloud: rgba(120, 200, 230, .12); --panel-a: #2D4F86; --panel-b: #22406E; --panel-lip: #12274A; }
+}
+:root[data-theme="dark"] { --bg: #0B2A44; --sky-1: #0B3350; --sky-2: #0F4A63; --cloud: rgba(120, 200, 230, .12); --panel-a: #2D4F86; --panel-b: #22406E; --panel-lip: #12274A; }
+body {
+  background-image:
+    radial-gradient(120px 56px at 14% 12%, var(--cloud), transparent 72%), radial-gradient(180px 70px at 86% 22%, var(--cloud), transparent 72%),
+    radial-gradient(150px 60px at 70% 78%, var(--cloud), transparent 72%), radial-gradient(130px 54px at 8% 66%, var(--cloud), transparent 72%),
+    linear-gradient(180deg, var(--sky-1), var(--sky-2));
+  background-attachment: fixed;
+}
+.panel {
+  background: linear-gradient(180deg, var(--panel-a), var(--panel-b)); border-radius: 28px; border: 3px solid rgba(255, 255, 255, .55);
+  box-shadow: 0 3px 0 rgba(255, 255, 255, .7) inset, 0 -4px 0 rgba(0, 0, 0, .06) inset, 0 8px 0 var(--panel-lip), 0 20px 28px -8px rgba(10, 40, 70, .45);
+}
+.board-box {
+  transform: rotateX(22deg) rotateZ(0deg); transform-origin: 50% 95%;
+  border-radius: 64px;
+  box-shadow: 0 3px 0 #B9794A, 0 6px 0 #A8683F, 0 9px 0 #96593A, 0 12px 0 #84502F, 0 15px 0 #724427, 0 18px 0 #5E381F,
+    0 22px 0 #4F2F1A, 0 50px 36px -8px rgba(5, 40, 70, .6), 0 90px 70px -30px rgba(5, 40, 70, .4);
+}
+.board-box:hover { transform: rotateX(12deg); }
+.board-col { padding-bottom: 30px; perspective: 1700px; }
+@media (max-width: 700px) { .board-box { transform: rotateX(12deg); } }
+.pawn .pbob { transform-box: fill-box; }
+.pawn.ativo .pbob { animation: hop 1s ease-in-out infinite; }
+@keyframes hop { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+@media (prefers-reduced-motion: reduce) { .pawn.ativo .pbob { animation: none; } }
+.brand-a { text-shadow: 0 2px 0 #fff, 0 4px 0 rgba(20, 38, 79, .25); }
+.legend li { box-shadow: 0 3px 0 rgba(20, 38, 79, .2); }
+.legend { margin-top: 40px; position: relative; z-index: 1; }
+
 </style>
 <div id="root"></div>
 <div id="modal-root"></div>
@@ -959,6 +1034,30 @@ window.ALAGOAS.CONFIG = {
   }
 
   /* ---------- geometria ---------- */
+  const SX0 = 190, SX1 = 810, SR = 85, SY = [250, 420, 590, 760];
+  const SNAKE_D = `M${SX0},${SY[0]} H${SX1} A${SR},${SR} 0 0 1 ${SX1},${SY[1]} H${SX0} A${SR},${SR} 0 0 0 ${SX0},${SY[2]} H${SX1} A${SR},${SR} 0 0 1 ${SX1},${SY[3]} H${SX0}`;
+  function snake(N) {
+    const segs = [];
+    for (let k = 0; k < 4; k++) {
+      const y = SY[k], dir = k % 2 === 0 ? 1 : -1, xs = dir === 1 ? SX0 : SX1, xe = dir === 1 ? SX1 : SX0;
+      segs.push({ len: SX1 - SX0, at: (u) => ({ x: xs + (xe - xs) * u, y }) });
+      if (k < 3) {
+        const cx = dir === 1 ? SX1 : SX0, cy = y + SR;
+        segs.push({ len: Math.PI * SR, at: (u) => { const a = -Math.PI / 2 + dir * Math.PI * u; return { x: cx + SR * Math.cos(a), y: cy + SR * Math.sin(a) }; } });
+      }
+    }
+    const total = segs.reduce((s, g) => s + g.len, 0);
+    const spacing = total / (N - 1);
+    const pts = [];
+    for (let i = 0; i < N; i++) {
+      let s = Math.min(i * spacing, total - 1e-6), k = 0;
+      while (s > segs[k].len) { s -= segs[k].len; k++; }
+      const p = segs[k].at(s / segs[k].len);
+      pts.push({ x: p.x, y: p.y, ang: 0 });
+    }
+    return { pts, spacing };
+  }
+
   function ring(N, a, b, off) {
     const M = 4000;
     const phis = [], cum = [0];
@@ -1007,7 +1106,9 @@ window.ALAGOAS.CONFIG = {
     const rot = `rotate(${p.ang} ${p.x} ${p.y})`;
     const special = t.tipo !== "cat";
     return `<g class="tile" data-i="${t.i}"><title>${tileTitle(t)}</title>
-      <g filter="url(#ds)"><rect x="${p.x - h}" y="${p.y - h}" width="${size}" height="${size}" rx="9" fill="${fill}" stroke="${stroke}" stroke-width="${special ? 4 : 3}" transform="${rot}"/></g>
+      <g filter="url(#ds)"><rect x="${p.x - h}" y="${p.y - h + 11}" width="${size}" height="${size}" rx="13" fill="${stroke}" transform="rotate(${p.ang} ${p.x} ${p.y + 11})"/>
+      <rect x="${p.x - h}" y="${p.y - h + 11}" width="${size}" height="${size}" rx="13" fill="#000" opacity=".28" transform="rotate(${p.ang} ${p.x} ${p.y + 11})"/></g>
+      <g filter="url(#clay)"><rect x="${p.x - h}" y="${p.y - h}" width="${size}" height="${size}" rx="13" fill="${fill}" stroke="${stroke}" stroke-width="${special ? 3.5 : 2.5}" transform="${rot}"/></g>
       <rect x="${p.x - h + 4}" y="${p.y - h + 4}" width="${size - 8}" height="${size * 0.38}" rx="6" fill="#FFFFFF" opacity=".22" transform="${rot}"/>
       <text x="${p.x}" y="${p.y - (showNum ? 4 : 0)}" text-anchor="middle" dominant-baseline="central" font-size="${size * 0.5}">${glyph}</text>
       ${showNum ? `<text x="${p.x}" y="${p.y + h * 0.68}" text-anchor="middle" dominant-baseline="central" font-size="${size * 0.22}" font-weight="900" fill="${numFill}" font-family="Nunito, sans-serif" stroke="${special ? "#14264F" : "none"}" stroke-width="2" paint-order="stroke">${t.i}</text>` : ""}
@@ -1017,8 +1118,8 @@ window.ALAGOAS.CONFIG = {
   /* ---------- montagem ---------- */
   function build(path) {
     const N = path.length;
-    const { pts, spacing } = ring(N, RA, RB, 0.5);
-    const size = Math.min(46, spacing * 0.88);
+    const { pts, spacing } = snake(N);
+    const size = Math.min(52, spacing * 0.8);
     const rnd = rng(2025);
 
     const cats = C.ORDEM_CATEGORIAS;
@@ -1031,14 +1132,15 @@ window.ALAGOAS.CONFIG = {
     let svg = `<svg id="board-svg" viewBox="0 0 ${W} ${W}" role="img" aria-label="Tabuleiro Alagoas: Arte que Encanta, com ${N} casas em percurso oval" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <filter id="ds" x="-30%" y="-30%" width="170%" height="170%"><feDropShadow dx="0" dy="3" stdDeviation="2.6" flood-color="#0A1A33" flood-opacity=".38"/></filter>
+      <filter id="clay" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceAlpha" stdDeviation="2.6" result="b"/><feSpecularLighting in="b" surfaceScale="4.5" specularConstant=".85" specularExponent="24" lighting-color="#FFFFFF" result="s"><feDistantLight azimuth="235" elevation="58"/></feSpecularLighting><feComposite in="s" in2="SourceAlpha" operator="in" result="s2"/><feDiffuseLighting in="b" surfaceScale="3" diffuseConstant="1.05" lighting-color="#FFFFFF" result="d"><feDistantLight azimuth="235" elevation="62"/></feDiffuseLighting><feComposite in="SourceGraphic" in2="d" operator="arithmetic" k1="1.0" k2="0" k3="0" k4="0" result="m"/><feComposite in="m" in2="s2" operator="arithmetic" k1="0" k2="1" k3=".6" k4="0"/></filter>
       <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#0A1A33" flood-opacity=".35"/></filter>
-      <radialGradient id="sea" cx="50%" cy="42%" r="68%"><stop offset="0" stop-color="#D7FBF4"/><stop offset=".28" stop-color="#85E3E2"/><stop offset=".62" stop-color="#2FB1DB"/><stop offset="1" stop-color="#14719F"/></radialGradient>
-      <radialGradient id="jung" cx="50%" cy="50%" r="75%"><stop offset="0" stop-color="#2FA14F"/><stop offset="1" stop-color="#0F5428"/></radialGradient>
-      <linearGradient id="wood" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C98F4E"/><stop offset=".5" stop-color="#A86B30"/><stop offset="1" stop-color="#7B4A20"/></linearGradient>
+      <radialGradient id="sea" cx="50%" cy="42%" r="68%"><stop offset="0" stop-color="#E4FFF8"/><stop offset=".3" stop-color="#8FEFE6"/><stop offset=".65" stop-color="#3CC3E6"/><stop offset="1" stop-color="#1A8FC0"/></radialGradient>
+      <radialGradient id="jung" cx="50%" cy="50%" r="75%"><stop offset="0" stop-color="#7BE06A"/><stop offset=".6" stop-color="#45C257"/><stop offset="1" stop-color="#1F9448"/></radialGradient>
+      <linearGradient id="wood" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E0A56A"/><stop offset=".5" stop-color="#C07F4A"/><stop offset="1" stop-color="#8E5732"/></linearGradient>
       <linearGradient id="sandG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF0C2"/><stop offset="1" stop-color="#EBCB86"/></linearGradient>
       <linearGradient id="band" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF1C6"/><stop offset="1" stop-color="#EACB8A"/></linearGradient>
-      <linearGradient id="lf1" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#1F7A38"/><stop offset="1" stop-color="#58C26D"/></linearGradient>
-      <linearGradient id="lf2" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#17692F"/><stop offset="1" stop-color="#3FA553"/></linearGradient>
+      <linearGradient id="lf1" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#2E9A45"/><stop offset="1" stop-color="#8CE67A"/></linearGradient>
+      <linearGradient id="lf2" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#27883D"/><stop offset="1" stop-color="#6FD468"/></linearGradient>
       <radialGradient id="pet" cx="50%" cy="85%" r="80%"><stop offset="0" stop-color="#9C1822"/><stop offset=".45" stop-color="#E02B30"/><stop offset="1" stop-color="#FF6E5E"/></radialGradient>
       <radialGradient id="sunG" cx="40%" cy="38%" r="70%"><stop offset="0" stop-color="#FFF08A"/><stop offset="1" stop-color="#FFC21F"/></radialGradient>
       <linearGradient id="tg-surpresa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2D4A96"/><stop offset="1" stop-color="#14264F"/></linearGradient>
@@ -1052,7 +1154,7 @@ window.ALAGOAS.CONFIG = {
     </defs>`;
 
     /* moldura de madeira + faixa de azulejos */
-    svg += `<g filter="url(#soft)"><rect x="0" y="0" width="${W}" height="${W}" rx="38" fill="url(#wood)"/></g>`;
+    svg += `<g filter="url(#soft)"><rect x="0" y="0" width="${W}" height="${W}" rx="60" fill="url(#wood)"/></g><g filter="url(#clay)"><rect x="0" y="0" width="${W}" height="${W}" rx="60" fill="url(#wood)"/></g>`;
     for (let i = 0; i < 26; i++) {
       const y = 8 + rnd() * 984, x1 = 6 + rnd() * 300, x2 = x1 + 160 + rnd() * 500;
       svg += `<path d="M${x1},${y} Q${(x1 + x2) / 2},${y + (rnd() - 0.5) * 10} ${x2},${y}" stroke="#5E3A15" stroke-width="1.4" fill="none" opacity=".25"/>`;
@@ -1063,6 +1165,7 @@ window.ALAGOAS.CONFIG = {
 
     /* selva */
     svg += `<g clip-path="url(#jungleClip)"><rect x="50" y="50" width="900" height="900" fill="url(#jung)"/>`;
+    svg += `<g filter="url(#clay)">`;
     for (let i = 0; i < 190; i++) {
       const x = 40 + rnd() * 920, y = 40 + rnd() * 920;
       const nx = (x - CX) / (RA + 56), ny = (y - CY) / (RB + 56);
@@ -1076,7 +1179,7 @@ window.ALAGOAS.CONFIG = {
     svg += hibiscus(500, 68, 28, 0) + hibiscus(934, 500, 28, 40) + hibiscus(66, 500, 28, 20) + hibiscus(500, 934, 28, 55);
     [[330, 70, "#FFD84D"], [668, 72, "#FFB3C7"], [70, 360, "#FFB3C7"], [932, 370, "#FFD84D"], [72, 650, "#FFD84D"], [930, 640, "#FFB3C7"], [330, 932, "#FFB3C7"], [668, 930, "#FFD84D"]]
       .forEach((f, i) => (svg += frangipani(f[0], f[1], 20, i * 30, f[2])));
-    svg += `</g>`;
+    svg += `</g></g>`;
 
     /* medalhões das categorias nos cantos */
     corners.forEach((c) => {
@@ -1085,77 +1188,54 @@ window.ALAGOAS.CONFIG = {
       <text x="${c[0]}" y="${c[1] + 2}" text-anchor="middle" dominant-baseline="central" font-size="50">${g.icone}</text>`;
     });
 
-    /* faixa de areia do percurso */
-    svg += `<g filter="url(#soft)"><ellipse cx="${CX}" cy="${CY}" rx="${RA}" ry="${RB}" fill="none" stroke="#6B3F1B" stroke-width="90"/></g>
-      <ellipse cx="${CX}" cy="${CY}" rx="${RA}" ry="${RB}" fill="none" stroke="url(#wood)" stroke-width="84"/>
-      <ellipse cx="${CX}" cy="${CY}" rx="${RA}" ry="${RB}" fill="none" stroke="url(#band)" stroke-width="72"/>
-      <ellipse cx="${CX}" cy="${CY}" rx="${RA}" ry="${RB}" fill="none" stroke="#C9A25A" stroke-width="2.5" stroke-dasharray="2 9" stroke-linecap="round" opacity=".7"/>
-      <ellipse cx="${CX}" cy="${CY}" rx="${RA + 35}" ry="${RB + 35}" fill="none" stroke="#FFE9A8" stroke-width="2" opacity=".7"/>`;
-
-    /* lagoa */
-    svg += `<ellipse cx="${CX}" cy="${CY}" rx="${RA - 41}" ry="${RB - 41}" fill="url(#sea)" stroke="#FFFFFF" stroke-width="5"/>`;
-    svg += `<g clip-path="url(#lagoonClip)">`;
-    for (let k = 1; k <= 5; k++) svg += `<ellipse cx="${CX}" cy="${CY}" rx="${(RA - 44) * (k / 5.2)}" ry="${(RB - 44) * (k / 5.2)}" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="${0.1 + k * 0.01}"/>`;
+    /* cenário entre as fileiras (vai por baixo do caminho) */
+    svg += `<g filter="url(#clay)">`;
+    svg += island(500, 505, 190, 34) + church(500, 486, 0.62);
+    svg += casarao(340, 506, 30, 26, "#F08BA7") + casarao(662, 508, 32, 28, "#F4C94A") + casarao(392, 498, 24, 22, "#7FC4EF");
+    svg += coqueiro(300, 512, 0.34, -12, 31) + coqueiro(712, 514, 0.34, 12, 32) + coqueiro(250, 500, 0.3, 8, 33);
+    svg += island(500, 335, 230, 26) + coqueiro(330, 338, 0.34, -10, 34) + coqueiro(670, 338, 0.34, 10, 35) + casarao(430, 330, 28, 24, "#F4C94A") + casarao(560, 331, 28, 24, "#F08BA7") + coqueiro(500, 338, 0.3, 4, 36);
+    svg += island(520, 675, 220, 26) + lighthouse(660, 660, 0.5) + coqueiro(300, 678, 0.34, -10, 37) + casarao(400, 668, 28, 24, "#7FC4EF") + casarao(470, 670, 26, 22, "#F4C94A") + coqueiro(740, 680, 0.3, 10, 38);
+    svg += `</g>`;
+    /* lagoa de baixo com jangadas */
+    svg += `<g filter="url(#clay)"><ellipse cx="560" cy="890" rx="250" ry="42" fill="url(#sea)" stroke="#FFFFFF" stroke-width="5"/></g>`;
     const rw = rng(9);
-    for (let i = 0; i < 34; i++) {
-      const x = CX + (rw() - 0.5) * 700, y = CY + (rw() - 0.5) * 640;
-      svg += `<path class="wv" style="animation-delay:${(rw() * 3).toFixed(2)}s" d="M${x},${y} q10,-9 20,0 t20,0" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".7"/>`;
+    for (let i = 0; i < 9; i++) svg += `<path class="wv" style="animation-delay:${(rw() * 3).toFixed(2)}s" d="M${380 + rw() * 360},${875 + rw() * 30} q10,-8 20,0 t20,0" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".7"/>`;
+    svg += `<g filter="url(#clay)">` + jangada(470, 892, 0.55, -4, 0) + jangada(650, 894, 0.5, 5, 1.2) + `</g>`;
+
+    /* caminho de terra e pedrinhas */
+    svg += `<g filter="url(#soft)"><path d="${SNAKE_D}" fill="none" stroke="#5E3A1B" stroke-width="82" stroke-linecap="round" stroke-linejoin="round"/></g>
+      <g filter="url(#clay)">
+      <path d="${SNAKE_D}" fill="none" stroke="#B9783F" stroke-width="78" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="${SNAKE_D}" fill="none" stroke="#E9C27E" stroke-width="68" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="${SNAKE_D}" fill="none" stroke="#F6DDA4" stroke-width="48" stroke-linecap="round" stroke-linejoin="round"/></g>
+      <path d="${SNAKE_D}" fill="none" stroke="#B9783F" stroke-width="3" stroke-dasharray="3 13" stroke-linecap="round" opacity=".55"/>`;
+    const rp = rng(77);
+    svg += `<g filter="url(#clay)">`;
+    for (let i = 0; i < 170; i++) {
+      const q = pts[Math.floor(rp() * N)], th = rp() * Math.PI * 2, o = 30 + rp() * 7;
+      const x = q.x + Math.cos(th) * (rp() * 8) + (rp() < 0.5 ? 0 : 0), y = q.y + (rp() < 0.5 ? -1 : 1) * o * (0.9 + rp() * 0.1), r = 2.4 + rp() * 3.2;
+      svg += `<ellipse cx="${(x + (rp() - 0.5) * 40).toFixed(1)}" cy="${y.toFixed(1)}" rx="${r.toFixed(1)}" ry="${(r * 0.8).toFixed(1)}" fill="${["#C9A06A", "#B98B57", "#D8B882", "#A87A48"][i % 4]}"/>`;
     }
-    svg += cloud(300, 235, 1) + cloud(700, 215, 0.8) + cloud(585, 262, 0.6);
-    svg += sun(445, 252, 30);
-
-    /* ilha da igreja (direita) */
-    svg += island(660, 392, 160, 48);
-    svg += casarao(560, 392, 40, 34, "#F4C94A") + casarao(752, 394, 44, 38, "#F08BA7") + casarao(610, 376, 34, 30, "#7FC4EF");
-    svg += church(668, 352, 1.08);
-    svg += coqueiro(545, 400, 0.5, -20, 21) + coqueiro(780, 404, 0.46, 18, 22);
-
-    /* ilha esquerda */
-    svg += island(300, 424, 118, 36);
-    svg += casarao(236, 424, 32, 28, "#F08BA7") + casarao(372, 426, 34, 30, "#F4C94A");
-    svg += church(302, 398, 0.62);
-    svg += coqueiro(214, 430, 0.42, -16, 23) + coqueiro(392, 432, 0.4, 14, 24);
-
-    /* farol */
-    svg += island(814, 604, 50, 22);
-    svg += lighthouse(818, 576, 0.74) + coqueiro(786, 608, 0.3, -10, 25);
-
-    /* jangadas */
-    svg += jangada(332, 766, 0.8, -4, 0) + jangada(668, 770, 0.74, 5, 1.2);
     svg += `</g>`;
 
-    /* borda de renda filé na margem da lagoa */
-    const lace = ring(120, RA - 38, RB - 38, 0).pts;
-    lace.forEach((p) => (svg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="9.5" fill="none" stroke="#FFFFFF" stroke-width="3" opacity=".95"/>`));
-
     /* placa do título */
-    svg += `<g filter="url(#ds)">
-      <rect x="240" y="446" width="520" height="168" rx="44" fill="#FFF4D9" stroke="#8A5A2B" stroke-width="6"/>
-      <rect x="252" y="458" width="496" height="144" rx="34" fill="none" stroke="#F0AE1F" stroke-width="3" stroke-dasharray="11 7"/>
-    </g>
-    <text x="500" y="540" text-anchor="middle" font-family="Lobster, cursive" font-size="98" fill="#14264F" stroke="#FFFFFF" stroke-width="7" paint-order="stroke">Alagoas</text>
-    <text x="500" y="594" text-anchor="middle" font-family="Lobster, cursive" font-size="48" fill="#C8283A" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">Arte que Encanta</text>
-    <g filter="url(#ds)"><path d="M296,622 L704,622 L690,646 L704,670 L296,670 L310,646Z" fill="#C8283A" stroke="#7E111D" stroke-width="3" stroke-linejoin="round"/></g>
-    <text x="500" y="653" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="18" fill="#FFF3D6">Nossa cultura é a nossa maior riqueza!</text>`;
+    svg += `<g filter="url(#ds)"><g filter="url(#clay)">
+      <rect x="250" y="44" width="500" height="112" rx="38" fill="#FFF4D9" stroke="#8A5A2B" stroke-width="6"/>
+      <rect x="260" y="54" width="480" height="92" rx="30" fill="none" stroke="#F0AE1F" stroke-width="3" stroke-dasharray="11 7"/>
+    </g></g>
+    <text x="500" y="112" text-anchor="middle" font-family="Lobster, cursive" font-size="70" fill="#14264F" stroke="#FFFFFF" stroke-width="6" paint-order="stroke">Alagoas</text>
+    <text x="500" y="143" text-anchor="middle" font-family="Lobster, cursive" font-size="30" fill="#C8283A" stroke="#FFFFFF" stroke-width="4" paint-order="stroke">Arte que Encanta</text>
+    <g filter="url(#ds)"><path d="M310,160 L690,160 L678,176 L690,192 L310,192 L322,176Z" fill="#C8283A" stroke="#7E111D" stroke-width="3" stroke-linejoin="round"/></g>
+    <text x="500" y="182" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="14" fill="#FFF3D6">Nossa cultura é a nossa maior riqueza!</text>`;
 
     /* casas */
     path.forEach((t, i) => (svg += tileSVG(t, pts[i], size)));
 
-    /* setas de sentido */
-    for (let i = 3; i < N - 1; i += 5) {
-      const p = pts[i];
-      const dx = CX - p.x, dy = CY - p.y, d = Math.hypot(dx, dy);
-      const ax = p.x + (dx / d) * 62, ay = p.y + (dy / d) * 62;
-      svg += `<path d="M-11,-10 L9,0 L-11,10 L-5,0Z" transform="translate(${ax} ${ay}) rotate(${p.ang})" fill="#FFD84D" stroke="#14264F" stroke-width="2.5" stroke-linejoin="round"/>`;
-    }
-
     /* bandeiras de início e chegada */
     const s0 = pts[0], sN = pts[N - 1];
-    const inward = (p, k) => { const dx = CX - p.x, dy = CY - p.y, d = Math.hypot(dx, dy); return [p.x + (dx / d) * k, p.y + (dy / d) * k]; };
-    const [fx0, fy0] = inward(s0, 66), [fx1, fy1] = inward(sN, 66);
-    svg += flag(fx0 - 4, fy0, "", "#1F9A55", false) + flag(fx1 + 4, fy1, "", "", true);
-    const lab = (x, y, txt, anchor) => `<text x="${x}" y="${y}" text-anchor="${anchor}" font-family="Nunito, sans-serif" font-weight="900" font-size="20" fill="#14264F" stroke="#FFFFFF" stroke-width="6" paint-order="stroke" letter-spacing="1">${txt}</text>`;
-    svg += lab(fx0 - 14, fy0 + 2, "INÍCIO", "end") + lab(fx1 + 14, fy1 + 2, "CHEGADA", "start");
+    svg += flag(s0.x - 62, s0.y + 4, "", "#1F9A55", false) + flag(sN.x - 62, sN.y + 4, "", "", true);
+    const lab = (x, y, txt) => `<text x="${x}" y="${y}" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="18" fill="#14264F" stroke="#FFFFFF" stroke-width="6" paint-order="stroke" letter-spacing="1">${txt}</text>`;
+    svg += lab(s0.x - 20, s0.y - 42, "INÍCIO") + lab(sN.x - 20, sN.y + 56, "CHEGADA");
 
     svg += `<circle id="hl" r="${size * 0.82}" cx="-100" cy="-100" fill="none" stroke="#FFFFFF" stroke-width="5"/><circle id="hl2" r="${size * 0.82}" cx="-100" cy="-100" fill="none" stroke="#F7C531" stroke-width="3"/>`;
     svg += `<g id="pawns"></g></svg>`;
@@ -1218,7 +1298,13 @@ window.ALAGOAS.CONFIG = {
      Topologia em estrela: o anfitrião tem o id "alagoas-<código>", os
      jogadores se conectam a ele e ele redistribui a presença de todos. */
   async function openPeer(code, onPeers, onError, isHost) {
-    const cfg = A.PEER_CFG || {};
+    const ICE = [
+      { urls: "stun:stun.l.google.com:19302" }, { urls: "stun:stun1.l.google.com:19302" }, { urls: "stun:stun.cloudflare.com:3478" },
+      { urls: "turn:eu-0.turn.peerjs.com:3478", username: "peerjs", credential: "peerjsp" },
+      { urls: "turn:us-0.turn.peerjs.com:3478", username: "peerjs", credential: "peerjsp" },
+      { urls: ["turn:openrelay.metered.ca:80", "turn:openrelay.metered.ca:443", "turn:openrelay.metered.ca:443?transport=tcp"], username: "openrelayproject", credential: "openrelayproject" }
+    ];
+    const cfg = Object.assign({ config: { iceServers: ICE, sdpSemantics: "unified-plan" } }, A.PEER_CFG || {});
     const hostId = "alagoas-" + code;
     const peer = isHost ? new window.Peer(hostId, cfg) : new window.Peer(cfg);
     await new Promise((res, rej) => {
@@ -1231,6 +1317,7 @@ window.ALAGOAS.CONFIG = {
     let mine = {}, seq = 0, closed = false;
     const conns = {}, pres = {};
     let hostConn = null, remote = [];
+    let st = isHost ? "ok" : "sinal";
     const list = () => {
       if (isHost) return [{ id: hostId, isMe: true, presence: mine }].concat(Object.keys(pres).map((id) => ({ id, isMe: false, presence: pres[id] })));
       return remote.map((p) => ({ id: p.id, isMe: p.id === peer.id, presence: p.id === peer.id ? mine : p.presence }));
@@ -1251,8 +1338,9 @@ window.ALAGOAS.CONFIG = {
       });
     } else {
       hostConn = peer.connect(hostId, { reliable: true });
-      hostConn.on("data", (m) => { if (m && m.peers) { remote = m.peers; fire(); } });
-      hostConn.on("open", () => { try { hostConn.send({ p: mine }); } catch (e) {} });
+      st = "ligando";
+      hostConn.on("data", (m) => { if (m && m.peers) { remote = m.peers; st = "ok"; fire(); } });
+      hostConn.on("open", () => { st = "aberto"; try { hostConn.send({ p: mine }); } catch (e) {} });
       const lost = () => { if (!closed && onError) onError({ code: "caiu" }); };
       hostConn.on("close", lost); hostConn.on("error", lost);
       peer.on("error", (e) => { if (e && e.type === "peer-unavailable") { if (onError) onError({ code: "sem_sala" }); return; } lost(); });
@@ -1266,6 +1354,7 @@ window.ALAGOAS.CONFIG = {
       code, uid: UID, meta,
       send: (a) => { seq++; return meta({ a: Object.assign({ n: seq }, a) }); },
       peers: list,
+      status: () => st,
       close: async () => { closed = true; try { peer.destroy(); } catch (e) {} }
     };
   }
@@ -1530,7 +1619,7 @@ window.ALAGOAS.CONFIG = {
           ${ONL.med ? `<p class="muted small">Você é o mediador e não ocupa uma vaga de jogador.</p>` : ""}
           <label class="check"><input type="checkbox" id="sortear-on" ${UI.sortear ? "checked" : ""}> Sortear a ordem de jogo</label>
           <button class="btn btn-primary btn-xl" data-act="iniciaronline" ${pode ? "" : "disabled"}>Começar partida</button>
-          ${pode ? "" : `<p class="muted small">É preciso de 2 a 4 jogadores para começar.</p>`}` : `<p class="wait">⏳ Aguardando o anfitrião começar a partida…</p>`}
+          ${pode ? "" : `<p class="muted small">É preciso de 2 a 4 jogadores para começar.</p>`}` : `<p class="wait">⏳ ${ONL.roster.length ? "Aguardando o anfitrião começar a partida…" : (NETC && NETC.status && NETC.status() === "ligando" ? "Ligando ao anfitrião… se demorar, tente trocar de rede (wi-fi ↔ 4G)." : "Conectando à sala…")}</p>`}
         ${ONL.err ? `<p class="err" role="alert">${esc(ONL.err)}</p>` : ""}
       </div>
     </main>`;
@@ -1567,7 +1656,13 @@ window.ALAGOAS.CONFIG = {
     </div>`;
     $("#pawns").innerHTML = VIEW.pl.map((p, i) => {
       const pe = peaoDe(p);
-      return `<g class="pawn" id="pawn-${i}"><g filter="url(#ds)"><ellipse cx="0" cy="17" rx="15" ry="5" fill="#0A1A33" opacity=".35"/><circle r="20" fill="#FFFFFF"/><circle r="17" fill="${pe.cor}"/><ellipse cx="-4" cy="-9" rx="9" ry="5" fill="#FFFFFF" opacity=".35"/></g><text text-anchor="middle" dominant-baseline="central" font-size="21" y="1">${pe.icone}</text><title>${esc(p.n)}</title></g>`;
+      return `<g class="pawn" id="pawn-${i}"><g class="pbob"><defs><radialGradient id="pg-${i}" cx="35%" cy="28%" r="80%"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".25" stop-color="${pe.cor}"/><stop offset="1" stop-color="#000000" stop-opacity=".55"/></radialGradient></defs>
+        <ellipse cx="0" cy="20" rx="19" ry="7" fill="#0A1A33" opacity=".45"/>
+        <ellipse cx="0" cy="15" rx="17" ry="7" fill="#FFFFFF"/><ellipse cx="0" cy="12" rx="17" ry="7" fill="${pe.cor}"/><rect x="-17" y="12" width="34" height="3" fill="${pe.cor}"/><ellipse cx="0" cy="15" rx="17" ry="7" fill="#000" opacity=".25"/>
+        <circle class="pring" r="26" cy="-6" fill="none" stroke="#FFD34D" stroke-width="4"/>
+        <circle cy="-8" r="19" fill="#FFFFFF"/><circle cy="-8" r="16.5" fill="${pe.cor}"/><circle cy="-8" r="16.5" fill="url(#pg-${i})"/>
+        <ellipse cx="-6" cy="-16" rx="7" ry="4" fill="#FFFFFF" opacity=".55" transform="rotate(-25 -6 -16)"/>
+        <text text-anchor="middle" dominant-baseline="central" font-size="19" y="-7">${pe.icone}</text></g><title>${esc(p.n)}</title></g>`;
     }).join("");
   }
 
@@ -2015,6 +2110,7 @@ window.ALAGOAS.CONFIG = {
     try { if (WL) WL.release(); } catch (e) {}
     WL = null;
     if (ONL && ONL.timer) clearTimeout(ONL.timer);
+    if (ONL && ONL.tick) clearInterval(ONL.tick);
     if (ONL && ONL.goneTimer) clearTimeout(ONL.goneTimer);
     if (NETC) { NETC.close(); NETC = null; }
     ONL = null;
@@ -2065,6 +2161,7 @@ window.ALAGOAS.CONFIG = {
     UI.screen = "lobby";
     renderLobby();
     ONL.timer = setTimeout(semSala, 25000);
+    ONL.tick = setInterval(() => { if (UI.screen === "lobby" && ONL && ONL.papel === "client" && !ONL.roster.length) renderLobby(); }, 2000);
   }
 
   function semSala() {
@@ -2072,7 +2169,7 @@ window.ALAGOAS.CONFIG = {
     stopNet();
     MODE = "local";
     UI.on.busy = false;
-    UI.on.err = "Não encontrei essa sala. Confira o código e peça para o anfitrião manter o jogo aberto, com a tela ligada.";
+    UI.on.err = "Não consegui ligar à sala. Confira o código, peça para o anfitrião manter o jogo aberto com a tela ligada e tente trocar de rede (wi-fi ↔ 4G).";
     UI.on.tab = "entrar";
     renderOnlineMenu();
   }
