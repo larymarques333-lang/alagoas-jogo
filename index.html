@@ -390,6 +390,21 @@ body {
 .opt .ot { min-width: 0; overflow-wrap: anywhere; }
 .note.small { font-size: 14px; }
 
+/* ---------- tabuleiro maior ---------- */
+.game-wrap { max-width: 1500px; }
+.game { grid-template-columns: minmax(0, 1fr) 360px; }
+.board-box { max-width: min(100%, calc(100dvh - 90px)); }
+.board-scroll { width: 100%; display: flex; justify-content: center; }
+.zoom-btn { align-self: flex-end; }
+.board-col.zoomed .board-scroll { display: block; overflow: auto; max-height: 72dvh; -webkit-overflow-scrolling: touch; border-radius: 22px; background: rgba(255, 255, 255, .25); }
+.board-col.zoomed .board-box { width: 210%; max-width: none; transform: none !important; margin: 0; }
+@media (max-width: 1000px) { .game { grid-template-columns: 1fr; } }
+@media (max-width: 700px) {
+  .board-col { margin-inline: -12px; }
+  .board-box { max-width: none; transform: rotateX(5deg); border-radius: 44px; }
+  .board-col.zoomed .board-box { width: 230%; }
+}
+
 </style>
 <div id="root"></div>
 <div id="modal-root"></div>
@@ -849,11 +864,25 @@ window.ALAGOAS.CONFIG = {
     return true;
   }
 
+  /* Quem confere a resposta: no mesmo aparelho, qualquer um; online com
+     mediador, só o anfitrião; online sem mediador, os adversários
+     (quem não está respondendo). No roubo de vez, quem errou confere. */
+  function canJudge(S, who) {
+    if (who.all) return true;
+    if (S.med) return !!who.host;
+    const ph = S.ph, i = who.idx;
+    if (i == null || i < 0) return false;
+    if (ph.k === "car") return ph.f === "r" ? i === ph.q : i !== ph.q;
+    if (ph.k === "org") return i !== ph.i;
+    return false;
+  }
+
   function reduce(S, D, a, who) {
     const ph = S.ph;
     if (!ph || a.pid !== ph.id) return false;
     const all = !!who.all;
-    const isJ = all || !!who.host;
+    const isJ = canJudge(S, who);
+    const seated = all || !!who.host || who.idx >= 0;
     const isCur = all || who.idx === S.t;
     const n = S.pl.length;
     const isQ = () => all || who.idx === ph.q;
@@ -937,7 +966,7 @@ window.ALAGOAS.CONFIG = {
         return true;
       }
       case "cont": {
-        if (!(isJ || isCur)) return false;
+        if (!(seated || isCur)) return false;
         if (ph.k === "res") return runOps(S, ph.pe);
         if (ph.k === "skp") { endTurn(S); return true; }
         if (ph.k === "sup") {
@@ -961,7 +990,7 @@ window.ALAGOAS.CONFIG = {
     return S;
   }
 
-  A.Rules = { create, reduce, compact, PATH, LAST };
+  A.Rules = { create, reduce, compact, canJudge, PATH, LAST };
 })();
 
 /* ============================================================
@@ -1473,8 +1502,88 @@ window.ALAGOAS.CONFIG = {
     };
   }
 
+  /* ---- Transporte por servidor (Firebase Realtime Database, via REST + SSE) ----
+     Cada aparelho grava a própria presença em /salas/<código>/p/<id> e todos
+     escutam /salas/<código>/p em tempo real. Funciona em qualquer rede. */
+  async function openFirebase(code, onPeers, onError, isHost) {
+    const base = String(A.FIREBASE_URL).replace(/\/+$/, "");
+    const root = `${base}/salas/${code}/p`;
+    let mine = {}, closed = false, tree = {}, es = null, hb = null;
+    const track = {};
+    const url = (id) => `${root}/${id}.json`;
+    try {
+      const r = await fetch(root + ".json?shallow=true");
+      if (!r.ok) throw new Error("http " + r.status);
+    } catch (e) { throw { code: "indisponivel" }; }
+
+    let busy = false, dirty = false;
+    const flush = async () => {
+      if (busy) { dirty = true; return; }
+      busy = true;
+      do {
+        dirty = false;
+        try { await fetch(url(UID), { method: "PUT", body: JSON.stringify({ j: JSON.stringify(mine), ts: { ".sv": "timestamp" } }) }); } catch (e) {}
+      } while (dirty && !closed);
+      busy = false;
+    };
+    const list = () => {
+      const out = [], now = Date.now();
+      Object.keys(tree).forEach((id) => {
+        const v = tree[id];
+        if (!v || typeof v.j !== "string") return;
+        if (id !== UID) {
+          const t = track[id] || (track[id] = { ts: null, at: now });
+          if (t.ts !== v.ts) { t.ts = v.ts; t.at = now; }
+          if (now - t.at > 20000) return;
+        }
+        let pr = {};
+        try { pr = JSON.parse(v.j); } catch (e) {}
+        out.push({ id, isMe: id === UID, presence: id === UID ? mine : pr });
+      });
+      if (!out.some((p) => p.isMe)) out.unshift({ id: UID, isMe: true, presence: mine });
+      return out;
+    };
+    const fire = () => { try { onPeers(list()); } catch (e) {} };
+    const applyAt = (path, data, merge) => {
+      const parts = String(path).split("/").filter(Boolean);
+      if (!parts.length) {
+        if (merge) Object.keys(data || {}).forEach((k) => { if (data[k] == null) delete tree[k]; else tree[k] = data[k]; });
+        else tree = data || {};
+      } else {
+        const k = parts[0];
+        if (parts.length === 1) {
+          if (merge) { tree[k] = Object.assign(tree[k] || {}, data || {}); }
+          else if (data == null) delete tree[k]; else tree[k] = data;
+        } else {
+          tree[k] = tree[k] || {};
+          tree[k][parts[1]] = data;
+        }
+      }
+      fire();
+    };
+    es = new EventSource(root + ".json");
+    es.addEventListener("put", (e) => { try { const m = JSON.parse(e.data); applyAt(m.path, m.data, false); } catch (x) {} });
+    es.addEventListener("patch", (e) => { try { const m = JSON.parse(e.data); applyAt(m.path, m.data, true); } catch (x) {} });
+    es.onerror = () => { /* o navegador reconecta sozinho */ };
+    hb = setInterval(flush, 4000);
+
+    return {
+      code, uid: UID,
+      meta: async (patch) => { mine = Object.assign({}, mine, patch); fire(); return flush(); },
+      send: (() => { let seq = 0; return (a) => { seq++; mine = Object.assign({}, mine, { a: Object.assign({ n: seq }, a) }); return flush(); }; })(),
+      peers: list,
+      status: () => "ok",
+      close: async () => {
+        closed = true;
+        try { clearInterval(hb); if (es) es.close(); } catch (e) {}
+        try { await fetch(isHost ? `${base}/salas/${code}.json` : url(UID), { method: "DELETE", keepalive: true }); } catch (e) {}
+      }
+    };
+  }
+
   /* Abre a sala. Devolve um controlador ou lança {code}. */
   async function open(code, onPeers, onError, isHost) {
+    if (A.FIREBASE_URL) return openFirebase(code, onPeers, onError, !!isHost);
     if (window.Peer) return openPeer(code, onPeers, onError, !!isHost);
     const room = await available();
     if (!room) throw { code: "indisponivel" };
@@ -1503,7 +1612,7 @@ window.ALAGOAS.CONFIG = {
     };
   }
 
-  A.Net = { open, newCode, cleanCode, available, UID, direct: () => !!window.Peer };
+  A.Net = { open, newCode, cleanCode, available, UID, direct: () => !!(A.FIREBASE_URL || window.Peer) };
 })();
 
 /* ============================================================
@@ -1629,7 +1738,7 @@ window.ALAGOAS.CONFIG = {
         <div class="cat-row" aria-label="Categorias">
           ${C.ORDEM_CATEGORIAS.map((k) => `<span class="chip" style="${catStyle(k)}"><span aria-hidden="true">${C.CATEGORIAS[k].icone}</span>${C.CATEGORIAS[k].curto}</span>`).join("")}
         </div>
-        <p class="muted small" id="versao">Versão 8 · tabuleiro redondo e alternativas</p>
+        <p class="muted small" id="versao">Versão 9 · adversário confere e tabuleiro ampliável</p>
         <div class="home-actions">
           <button class="btn btn-primary btn-xl" data-act="jogar" data-focus>🎲 Jogar no mesmo aparelho</button>
           <button class="btn btn-sun btn-xl" data-act="online">🌐 Jogar online com amigos</button>
@@ -1743,6 +1852,7 @@ window.ALAGOAS.CONFIG = {
   /* ---------- tela de jogo ---------- */
   function renderGameShell() {
     UI.screen = "game";
+    UI.zoom = false;
     root().innerHTML = `
     <div class="wrap game-wrap">
       <header class="topbar">
@@ -1755,7 +1865,8 @@ window.ALAGOAS.CONFIG = {
       </header>
       <div class="game">
         <section class="board-col" aria-label="Tabuleiro">
-          <div class="board-box">${BOARD.svg}</div>
+          <button class="btn btn-ghost btn-sm zoom-btn" data-act="zoom" aria-pressed="false">🔍 Ampliar tabuleiro</button>
+          <div class="board-scroll" id="board-scroll"><div class="board-box">${BOARD.svg}</div></div>
           <ul class="legend" aria-label="Legenda das casas">
             ${C.ORDEM_CATEGORIAS.map((k) => `<li style="${catStyle(k)}"><i class="lg" aria-hidden="true">${C.CATEGORIAS[k].icone}</i>${C.CATEGORIAS[k].curto}</li>`).join("")}
             <li class="lg-special"><i class="lg lg-s" aria-hidden="true">🎁</i>Surpresa</li>
@@ -1866,6 +1977,19 @@ window.ALAGOAS.CONFIG = {
       if (c) { c.setAttribute("cx", t.x); c.setAttribute("cy", t.y); }
     });
   }
+  function centerOn() {
+    const sc = $("#board-scroll");
+    if (!sc || !UI.zoom || !VIEW) return;
+    const t = BOARD.tiles[DISP[VIEW.t] != null ? DISP[VIEW.t] : VIEW.pl[VIEW.t].x];
+    sc.scrollTo({ left: (t.x / 1000) * sc.scrollWidth - sc.clientWidth / 2, top: (t.y / 1000) * sc.scrollHeight - sc.clientHeight / 2, behavior: reduced ? "auto" : "smooth" });
+  }
+  function toggleZoom() {
+    UI.zoom = !UI.zoom;
+    const col = $(".board-col"), b = $(".zoom-btn");
+    if (col) col.classList.toggle("zoomed", UI.zoom);
+    if (b) { b.setAttribute("aria-pressed", UI.zoom); b.textContent = UI.zoom ? "↩ Reduzir tabuleiro" : "🔍 Ampliar tabuleiro"; }
+    if (UI.zoom) setTimeout(centerOn, 60);
+  }
   function markActive() {
     if (!VIEW) return;
     VIEW.pl.forEach((_, i) => {
@@ -1873,6 +1997,7 @@ window.ALAGOAS.CONFIG = {
       if (g) g.classList.toggle("ativo", i === VIEW.t);
     });
     placeHL();
+    centerOn();
   }
 
   async function animate(prev, next) {
@@ -1929,6 +2054,7 @@ window.ALAGOAS.CONFIG = {
     await animate(prev, S);
     DISP = S.pl.map((p) => p.x);
     placeAll();
+    centerOn();
     renderAll();
     renderPhase();
   }
@@ -1958,7 +2084,7 @@ window.ALAGOAS.CONFIG = {
 
   function judgeBox() {
     const S = VIEW, ph = S.ph, c = CARTAS[ph.cat][ph.idx];
-    return `<div class="judge"><div class="eyebrow">Responsável pela partida</div>
+    return `<div class="judge"><div class="eyebrow">${S.med ? "Mediador" : "Você confere a resposta"}</div>
       <button class="btn btn-ghost" data-a="ver" aria-expanded="${UI.ver}">${UI.ver ? "🙈 Esconder a resposta" : "👁 Ver a resposta correta"}</button>
       ${UI.ver ? `<div class="answer"><span>Resposta</span><strong>${esc(c[3])}</strong></div>` : ""}</div>`;
   }
@@ -1967,7 +2093,7 @@ window.ALAGOAS.CONFIG = {
     const ph = S.ph, c = CARTAS[ph.cat][ph.idx], cfg = C.CATEGORIAS[ph.cat], q = S.pl[ph.q];
     const isAdv = ph.md === "a", isX = ph.md === "x";
     const meQ = ME.all || ME.idx === ph.q;
-    const isJ = ME.all || ME.host;
+    const isJ = R.canJudge(S, ME);
     const hints = [c[1], c[2]].slice(0, ph.d);
     const dicasHtml = hints.map((h, k) => `<div class="hintbox"><span>Dica ${k + 1}</span>${esc(h)}</div>`).join("");
     const speakBtn = canSpeak() ? `<button class="btn btn-ghost" data-a="falar" aria-label="Ler a pergunta em voz alta">🔊 Ler em voz alta</button>` : "";
@@ -2011,7 +2137,7 @@ window.ALAGOAS.CONFIG = {
           <div class="verdict">
             <button class="btn btn-ok btn-xl" data-a="acertou">✅ Acertou</button>
             <button class="btn btn-no btn-xl" data-a="errou">❌ Errou</button>
-          </div>` : `<p class="wait">⏳ O mediador está conferindo a resposta…</p>`);
+          </div>` : `<p class="wait">⏳ ${S.med ? "O mediador" : "Um adversário"} está conferindo a resposta…</p>`);
     } else {
       const outros = S.pl.map((p, k) => [p, k]).filter(([, k]) => k !== ph.q);
       const tent = ph.tn.length ? `<ul class="tents">${ph.tn.map((x) => `<li><b>${esc(S.pl[x.i].n)}</b> tentou${x.t ? `: <q>${esc(x.t)}</q>` : ""}</li>`).join("")}</ul>` : "";
@@ -2026,7 +2152,7 @@ window.ALAGOAS.CONFIG = {
           </div>` : mayTry ? `
           <label class="flabel" for="resp">Sua tentativa <span class="muted">(opcional)</span></label>
           <input id="resp" class="input" type="text" maxlength="40" autocomplete="off">
-          <button class="btn btn-primary btn-xl" data-a="tenta">🙋 Tentar responder</button>` : `<p class="wait">⏳ Aguardando o mediador…</p>`);
+          <button class="btn btn-primary btn-xl" data-a="tenta">🙋 Tentar responder</button>` : `<p class="wait">⏳ Aguardando ${S.med ? "o mediador" : esc(q.n)} decidir…</p>`);
     }
 
     const html = `<article class="card" style="${catStyle(ph.cat)}">
@@ -2043,7 +2169,7 @@ window.ALAGOAS.CONFIG = {
 
   function resPhase(S) {
     const ph = S.ph;
-    const canC = ME.all || ME.host || ME.idx === S.t;
+    const canC = ME.all || ME.host || ME.idx >= 0;
     let ans = "";
     if (ph.cat) {
       const c = CARTAS[ph.cat][ph.idx], cfg = C.CATEGORIAS[ph.cat];
@@ -2058,8 +2184,8 @@ window.ALAGOAS.CONFIG = {
 
   function phasePhase(S) {
     const ph = S.ph;
-    const canC = ME.all || ME.host || ME.idx === S.t;
-    const isJ = ME.all || ME.host;
+    const canC = ME.all || ME.host || ME.idx >= 0;
+    const isJ = R.canJudge(S, ME);
     if (ph.k === "sup") {
       const s = C.SURPRESAS.find((x) => x.id === ph.sid);
       const p = S.pl[ph.i];
@@ -2082,8 +2208,8 @@ window.ALAGOAS.CONFIG = {
       const p = S.pl[ph.i];
       return { html: `<div class="info"><div class="big" aria-hidden="true">❤️</div><h2>Orgulho de ser alagoano</h2>
         <p><b>${esc(p.n)}</b>, seu desafio:<br><span class="desafio">${esc(ph.ds)}</span></p>
-        <p class="note">Cumprindo o desafio, avança ${C.ORGULHO_AVANCO} casas. O responsável pela partida confere.</p>
-        ${isJ ? `<div class="choices"><button class="btn btn-ok" data-a="orgok" data-focus>✅ Cumpriu (+${C.ORGULHO_AVANCO})</button><button class="btn btn-no" data-a="orgno">❌ Não conseguiu</button></div>` : `<p class="wait">⏳ O mediador está conferindo…</p>`}</div>`, cls: "" };
+        <p class="note">Cumprindo o desafio, avança ${C.ORGULHO_AVANCO} casas. Um adversário confere.</p>
+        ${isJ ? `<div class="choices"><button class="btn btn-ok" data-a="orgok" data-focus>✅ Cumpriu (+${C.ORGULHO_AVANCO})</button><button class="btn btn-no" data-a="orgno">❌ Não conseguiu</button></div>` : `<p class="wait">⏳ ${S.med ? "O mediador" : "Um adversário"} está conferindo…</p>`}</div>`, cls: "" };
     }
     if (ph.k === "fim") {
       const w = S.pl[ph.w], pe = peaoDe(w);
@@ -2406,7 +2532,7 @@ window.ALAGOAS.CONFIG = {
     <ol class="rules">
       <li>Escolha livremente uma categoria: 🍲 Gastronomia, 🎵 Música, 🧶 Artesanato ou 💃 Dança.</li>
       <li>Uma pergunta da categoria aparece. Responda na hora ou peça a 1ª dica. Ainda em dúvida? Peça a 2ª dica.</li>
-      <li>O responsável pela partida confere a resposta e marca se acertou.</li>
+      <li>Um adversário vê a resposta correta e marca se você acertou. Com as alternativas, o jogo confere sozinho.</li>
     </ol>
     <h3>Quanto você avança</h3>
     <div class="table">
@@ -2426,7 +2552,7 @@ window.ALAGOAS.CONFIG = {
     <h3>Chegada</h3>
     <p>Vence quem alcançar ou ultrapassar a última casa. Não precisa chegar exatamente: se o avanço passar da chegada, o jogo termina na hora.</p>
     <h3>Jogando online</h3>
-    <p>Uma pessoa cria a sala e passa o código. Os outros entram com o código. O anfitrião é o mediador: ele confere as respostas e vê a resposta correta.</p>`;
+    <p>Uma pessoa cria a sala e passa o código. Os outros entram com o código. Quem não está respondendo vê a resposta correta e marca se acertou ou errou (se o anfitrião escolher só mediar, só ele confere).</p>`;
 
   const SOBRE = `
     <h2>Sobre o jogo</h2>
@@ -2473,6 +2599,7 @@ window.ALAGOAS.CONFIG = {
         startLocal(S.players.slice(0, S.n).map((p, i) => ({ n: (p.nome || "").trim() || `Jogador ${i + 1}`, p: p.peao })), S.sortear);
       }
       else if (a === "menu") menuModal();
+      else if (a === "zoom") toggleZoom();
       else if (a === "cat") dispatch("cat", { c: b.dataset.cat });
       else if (a === "tab") { UI.on.tab = b.dataset.tab; UI.on.err = ""; renderOnlineMenu(); }
       else if (a === "onpeao") { UI.on.peao = b.dataset.p; renderOnlineMenu(); }
